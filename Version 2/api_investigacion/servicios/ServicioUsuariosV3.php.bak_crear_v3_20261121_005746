@@ -1,0 +1,72 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * PROYECTO DE INVESTIGACION - V3
+ *
+ * ARCHIVO: ServicioUsuariosV3.php
+ *
+ * QUE ES:
+ * Implementacion de las operaciones de negocio
+ * para consultar usuarios del sistema.
+ *
+ * POR QUE:
+ * Mantiene separadas las reglas de negocio
+ * y las consultas de MariaDB.
+ *
+ * QUE NO HACE:
+ * No ejecuta SQL.
+ * No devuelve respuestas HTTP.
+ * No comprueba directamente el JWT.
+ * No devuelve contrasenas.
+ */
+
+require_once __DIR__ . '/IServicioUsuariosV3.php';
+
+require_once __DIR__
+    . '/../repositorios/IRepositorioUsuariosV3.php';
+
+final class ServicioUsuariosV3
+    implements IServicioUsuariosV3
+{
+    private IRepositorioUsuariosV3 $repositorio;
+
+    public function __construct(
+        IRepositorioUsuariosV3 $repositorio
+    ) {
+        $this->repositorio = $repositorio;
+    }
+
+    /*
+     * LISTAR USUARIOS
+     *
+     * Obtiene los usuarios desde el repositorio.
+     * Incluye sus roles y estados actuales.
+     *
+     * El controlador y la guardia de seguridad
+     * deben comprobar que quien solicita el
+     * listado tenga rol ADMIN.
+     */
+    public function listar(): array
+    {
+        return $this->repositorio->listar();
+    }
+
+    /*
+     * CONSULTAR USUARIO POR ID
+     *
+     * Regla de negocio:
+     * El identificador debe ser mayor que cero.
+     */
+    public function obtenerPorId(int $id): ?array
+    {
+        if ($id <= 0) {
+            throw new InvalidArgumentException(
+                'El identificador del usuario debe ser positivo.'
+            );
+        }
+
+        return $this->repositorio->obtenerPorId($id);
+    }
+}

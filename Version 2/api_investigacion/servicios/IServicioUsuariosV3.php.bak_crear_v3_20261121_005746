@@ -1,0 +1,28 @@
+<?php
+
+declare(strict_types=1);
+
+/*
+ * PROYECTO DE INVESTIGACION - V3
+ *
+ * ARCHIVO: IServicioUsuariosV3.php
+ *
+ * QUE ES:
+ * Contrato de las operaciones del servicio
+ * de administracion de usuarios.
+ *
+ * POR QUE:
+ * El controlador debe depender de una interfaz.
+ *
+ * QUE NO HACE:
+ * No ejecuta SQL.
+ * No responde HTTP.
+ * No contiene HTML.
+ */
+
+interface IServicioUsuariosV3
+{
+    public function listar(): array;
+
+    public function obtenerPorId(int $id): ?array;
+}

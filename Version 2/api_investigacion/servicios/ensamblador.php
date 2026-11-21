@@ -1,0 +1,840 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * ARCHIVO: ensamblador.php
+ * CAPA: Servicios / Configuracion de dependencias
+ *
+ * QUE ES:
+ * Archivo encargado de construir las dependencias
+ * de los 16 recursos del sistema de investigacion.
+ *
+ * POR QUE ESTA AQUI:
+ * Centraliza la conexion con MariaDB y la creacion
+ * de repositorios, servicios y controladores.
+ *
+ * Conserva la clase Ensamblador requerida por la V1
+ * y las funciones independientes utilizadas en la V2.
+ *
+ * QUE NO HACE:
+ * No ejecuta consultas SQL.
+ * No implementa reglas de negocio.
+ * No procesa directamente las peticiones HTTP.
+ * No almacena credenciales directamente en el codigo.
+ */
+
+
+// =========================================================
+// 1. IMPORTACIONES DE SEMILLERO
+// =========================================================
+
+require_once __DIR__ . '/../modelos/Semillero.php';
+require_once __DIR__ . '/../repositorios/IRepositorioSemillero.php';
+require_once __DIR__ . '/../repositorios/RepositorioSemilleroMariaDB.php';
+require_once __DIR__ . '/IServicioSemillero.php';
+require_once __DIR__ . '/ServicioSemillero.php';
+require_once __DIR__ . '/../controladores/ControladorSemillero.php';
+
+
+// =========================================================
+// 2. IMPORTACIONES DE DOCENTE
+// =========================================================
+
+require_once __DIR__ . '/../modelos/Docente.php';
+require_once __DIR__ . '/../repositorios/IRepositorioDocente.php';
+require_once __DIR__ . '/../repositorios/RepositorioDocenteMariaDB.php';
+require_once __DIR__ . '/IServicioDocente.php';
+require_once __DIR__ . '/ServicioDocente.php';
+require_once __DIR__ . '/../controladores/ControladorDocente.php';
+
+
+// =========================================================
+// 3. IMPORTACIONES DE GRUPO DE INVESTIGACION
+// =========================================================
+
+require_once __DIR__ . '/../modelos/GrupoInvestigacion.php';
+require_once __DIR__ . '/../repositorios/IRepositorioGrupoInvestigacion.php';
+require_once __DIR__ . '/../repositorios/RepositorioGrupoInvestigacionMariaDB.php';
+require_once __DIR__ . '/IServicioGrupoInvestigacion.php';
+require_once __DIR__ . '/ServicioGrupoInvestigacion.php';
+require_once __DIR__ . '/../controladores/ControladorGrupoInvestigacion.php';
+
+
+// =========================================================
+// 4. IMPORTACIONES DE GRUPO LINEA
+// =========================================================
+
+require_once __DIR__ . '/../modelos/GrupoLinea.php';
+require_once __DIR__ . '/../repositorios/IRepositorioGrupoLinea.php';
+require_once __DIR__ . '/../repositorios/RepositorioGrupoLineaMariaDB.php';
+require_once __DIR__ . '/IServicioGrupoLinea.php';
+require_once __DIR__ . '/ServicioGrupoLinea.php';
+require_once __DIR__ . '/../controladores/ControladorGrupoLinea.php';
+
+
+// =========================================================
+// 5. IMPORTACIONES DE PARTICIPA GRUPO
+// =========================================================
+
+require_once __DIR__ . '/../modelos/ParticipaGrupo.php';
+require_once __DIR__ . '/../repositorios/IRepositorioParticipaGrupo.php';
+require_once __DIR__ . '/../repositorios/RepositorioParticipaGrupoMariaDB.php';
+require_once __DIR__ . '/IServicioParticipaGrupo.php';
+require_once __DIR__ . '/ServicioParticipaGrupo.php';
+require_once __DIR__ . '/../controladores/ControladorParticipaGrupo.php';
+
+
+// =========================================================
+// 6. IMPORTACIONES DE PARTICIPA SEMILLERO
+// =========================================================
+
+require_once __DIR__ . '/../modelos/ParticipaSemillero.php';
+require_once __DIR__ . '/../repositorios/IRepositorioParticipaSemillero.php';
+require_once __DIR__ . '/../repositorios/RepositorioParticipaSemilleroMariaDB.php';
+require_once __DIR__ . '/IServicioParticipaSemillero.php';
+require_once __DIR__ . '/ServicioParticipaSemillero.php';
+require_once __DIR__ . '/../controladores/ControladorParticipaSemillero.php';
+
+
+// =========================================================
+// 7. IMPORTACIONES DE SEMILLERO LINEA
+// =========================================================
+
+require_once __DIR__ . '/../modelos/SemilleroLinea.php';
+require_once __DIR__ . '/../repositorios/IRepositorioSemilleroLinea.php';
+require_once __DIR__ . '/../repositorios/RepositorioSemilleroLineaMariaDB.php';
+require_once __DIR__ . '/IServicioSemilleroLinea.php';
+require_once __DIR__ . '/ServicioSemilleroLinea.php';
+require_once __DIR__ . '/../controladores/ControladorSemilleroLinea.php';
+
+
+// =========================================================
+// 8. IMPORTACIONES DE AC LINEA
+// =========================================================
+
+require_once __DIR__ . '/../modelos/AcLinea.php';
+require_once __DIR__ . '/../repositorios/IRepositorioAcLinea.php';
+require_once __DIR__ . '/../repositorios/RepositorioAcLineaMariaDB.php';
+require_once __DIR__ . '/IServicioAcLinea.php';
+require_once __DIR__ . '/ServicioAcLinea.php';
+require_once __DIR__ . '/../controladores/ControladorAcLinea.php';
+
+
+// =========================================================
+// 9. IMPORTACIONES DE ODS LINEA
+// =========================================================
+
+require_once __DIR__ . '/../modelos/OdsLinea.php';
+require_once __DIR__ . '/../repositorios/IRepositorioOdsLinea.php';
+require_once __DIR__ . '/../repositorios/RepositorioOdsLineaMariaDB.php';
+require_once __DIR__ . '/IServicioOdsLinea.php';
+require_once __DIR__ . '/ServicioOdsLinea.php';
+require_once __DIR__ . '/../controladores/ControladorOdsLinea.php';
+
+
+// =========================================================
+// 10. IMPORTACIONES DE AA LINEA
+// =========================================================
+
+require_once __DIR__ . '/../modelos/AaLinea.php';
+require_once __DIR__ . '/../repositorios/IRepositorioAaLinea.php';
+require_once __DIR__ . '/../repositorios/RepositorioAaLineaMariaDB.php';
+require_once __DIR__ . '/IServicioAaLinea.php';
+require_once __DIR__ . '/ServicioAaLinea.php';
+require_once __DIR__ . '/../controladores/ControladorAaLinea.php';
+
+
+// =========================================================
+// 11. CONEXION CON LA BASE DE DATOS
+//
+// Utiliza las variables de entorno configuradas
+// en Docker Compose.
+// =========================================================
+
+function obtenerConexionBD(): PDO
+{
+    $host = getenv('DB_HOST');
+
+    $baseDatos = getenv('DB_NAME');
+
+    $usuario = getenv('DB_USER');
+
+    $contrasena = getenv('DB_PASS');
+
+
+    // Validar las variables de entorno.
+
+    if (
+        $host === false || $host === '' ||
+        $baseDatos === false || $baseDatos === '' ||
+        $usuario === false || $usuario === '' ||
+        $contrasena === false || $contrasena === ''
+    ) {
+
+        throw new RuntimeException(
+            'Las variables de conexión no están configuradas.'
+        );
+
+    }
+
+
+    // Construir la cadena de conexion.
+
+    $dsn = 'mysql:host=' . $host
+        . ';port=3306'
+        . ';dbname=' . $baseDatos
+        . ';charset=utf8mb4';
+
+
+    // Configurar las opciones de PDO.
+
+    $opciones = [
+
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+
+        PDO::ATTR_EMULATE_PREPARES => false
+
+    ];
+
+
+    return new PDO(
+        $dsn,
+        $usuario,
+        $contrasena,
+        $opciones
+    );
+}
+
+
+// =========================================================
+// 12. CLASE ENSAMBLADOR DE LA VERSION 1
+//
+// Los controladores originales utilizan metodos estaticos
+// de esta clase para obtener sus servicios.
+//
+// Se conserva este contrato para mantener la V1.
+// =========================================================
+
+class Ensamblador
+{
+
+    // -----------------------------------------------------
+    // 12.1. SERVICIO DE AREA DE CONOCIMIENTO
+    // -----------------------------------------------------
+
+    public static function crearServicioAreaConocimiento(): IServicioAreaConocimiento
+    {
+        require_once __DIR__ . '/../modelos/AreaConocimiento.php';
+
+        require_once __DIR__ . '/../repositorios/IRepositorioAreaConocimiento.php';
+
+        require_once __DIR__ . '/../repositorios/RepositorioAreaConocimientoMariaDB.php';
+
+        require_once __DIR__ . '/IServicioAreaConocimiento.php';
+
+        require_once __DIR__ . '/ServicioAreaConocimiento.php';
+
+
+        $pdo = obtenerConexionBD();
+
+        $repo = new RepositorioAreaConocimientoMariaDB($pdo);
+
+        return new ServicioAreaConocimiento($repo);
+    }
+
+
+    // -----------------------------------------------------
+    // 12.2. SERVICIO DE OBJETIVO DE DESARROLLO SOSTENIBLE
+    // -----------------------------------------------------
+
+    public static function crearServicioObjetivoDesarrolloSostenible(): IServicioObjetivoDesarrolloSostenible
+    {
+        require_once __DIR__ . '/../modelos/ObjetivoDesarrolloSostenible.php';
+
+        require_once __DIR__ . '/../repositorios/IRepositorioObjetivoDesarrolloSostenible.php';
+
+        require_once __DIR__ . '/../repositorios/RepositorioObjetivoDesarrolloSostenibleMariaDB.php';
+
+        require_once __DIR__ . '/IServicioObjetivoDesarrolloSostenible.php';
+
+        require_once __DIR__ . '/ServicioObjetivoDesarrolloSostenible.php';
+
+
+        $pdo = obtenerConexionBD();
+
+        $repo = new RepositorioObjetivoDesarrolloSostenibleMariaDB($pdo);
+
+        return new ServicioObjetivoDesarrolloSostenible($repo);
+    }
+
+
+    // -----------------------------------------------------
+    // 12.3. SERVICIO DE AREA DE APLICACION
+    // -----------------------------------------------------
+
+    public static function crearServicioAreaAplicacion(): IServicioAreaAplicacion
+    {
+        require_once __DIR__ . '/../modelos/AreaAplicacion.php';
+
+        require_once __DIR__ . '/../repositorios/IRepositorioAreaAplicacion.php';
+
+        require_once __DIR__ . '/../repositorios/RepositorioAreaAplicacionMariaDB.php';
+
+        require_once __DIR__ . '/IServicioAreaAplicacion.php';
+
+        require_once __DIR__ . '/ServicioAreaAplicacion.php';
+
+
+        $pdo = obtenerConexionBD();
+
+        $repo = new RepositorioAreaAplicacionMariaDB($pdo);
+
+        return new ServicioAreaAplicacion($repo);
+    }
+
+
+    // -----------------------------------------------------
+    // 12.4. SERVICIO DE TERMINO CLAVE
+    // -----------------------------------------------------
+
+    public static function crearServicioTerminoClave(): IServicioTerminoClave
+    {
+        require_once __DIR__ . '/../modelos/TerminoClave.php';
+
+        require_once __DIR__ . '/../repositorios/IRepositorioTerminoClave.php';
+
+        require_once __DIR__ . '/../repositorios/RepositorioTerminoClaveMariaDB.php';
+
+        require_once __DIR__ . '/IServicioTerminoClave.php';
+
+        require_once __DIR__ . '/ServicioTerminoClave.php';
+
+
+        $pdo = obtenerConexionBD();
+
+        $repo = new RepositorioTerminoClaveMariaDB($pdo);
+
+        return new ServicioTerminoClave($repo);
+    }
+
+
+    // -----------------------------------------------------
+    // 12.5. SERVICIO DE UNIVERSIDAD
+    // -----------------------------------------------------
+
+    public static function crearServicioUniversidad(): IServicioUniversidad
+    {
+        require_once __DIR__ . '/../modelos/Universidad.php';
+
+        require_once __DIR__ . '/../repositorios/IRepositorioUniversidad.php';
+
+        require_once __DIR__ . '/../repositorios/RepositorioUniversidadMariaDB.php';
+
+        require_once __DIR__ . '/IServicioUniversidad.php';
+
+        require_once __DIR__ . '/ServicioUniversidad.php';
+
+
+        $pdo = obtenerConexionBD();
+
+        $repo = new RepositorioUniversidadMariaDB($pdo);
+
+        return new ServicioUniversidad($repo);
+    }
+
+
+    // -----------------------------------------------------
+    // 12.6. SERVICIO DE LINEA DE INVESTIGACION
+    // -----------------------------------------------------
+
+    public static function crearServicioLineaInvestigacion(): IServicioLineaInvestigacion
+    {
+        require_once __DIR__ . '/../modelos/LineaInvestigacion.php';
+
+        require_once __DIR__ . '/../repositorios/IRepositorioLineaInvestigacion.php';
+
+        require_once __DIR__ . '/../repositorios/RepositorioLineaInvestigacionMariaDB.php';
+
+        require_once __DIR__ . '/IServicioLineaInvestigacion.php';
+
+        require_once __DIR__ . '/ServicioLineaInvestigacion.php';
+
+
+        $pdo = obtenerConexionBD();
+
+        $repo = new RepositorioLineaInvestigacionMariaDB($pdo);
+
+        return new ServicioLineaInvestigacion($repo);
+    }
+}
+
+
+// =========================================================
+// 13. CONTROLADORES DE LA VERSION 1
+//
+// Los controladores originales tienen constructores
+// sin parametros.
+//
+// Cada controlador obtiene su servicio mediante
+// los metodos estaticos de la clase Ensamblador.
+// =========================================================
+
+
+// ---------------------------------------------------------
+// 13.1. AREA DE CONOCIMIENTO
+// ---------------------------------------------------------
+
+function crearControladorAreaConocimiento(): ControladorAreaConocimiento
+{
+    require_once __DIR__ . '/../controladores/ControladorAreaConocimiento.php';
+
+    return new ControladorAreaConocimiento();
+}
+
+
+// ---------------------------------------------------------
+// 13.2. OBJETIVO DE DESARROLLO SOSTENIBLE
+// ---------------------------------------------------------
+
+function crearControladorObjetivoDesarrolloSostenible(): ControladorObjetivoDesarrolloSostenible
+{
+    require_once __DIR__ . '/../controladores/ControladorObjetivoDesarrolloSostenible.php';
+
+    return new ControladorObjetivoDesarrolloSostenible();
+}
+
+
+// ---------------------------------------------------------
+// 13.3. AREA DE APLICACION
+// ---------------------------------------------------------
+
+function crearControladorAreaAplicacion(): ControladorAreaAplicacion
+{
+    require_once __DIR__ . '/../controladores/ControladorAreaAplicacion.php';
+
+    return new ControladorAreaAplicacion();
+}
+
+
+// ---------------------------------------------------------
+// 13.4. TERMINO CLAVE
+// ---------------------------------------------------------
+
+function crearControladorTerminoClave(): ControladorTerminoClave
+{
+    require_once __DIR__ . '/../controladores/ControladorTerminoClave.php';
+
+    return new ControladorTerminoClave();
+}
+
+
+// ---------------------------------------------------------
+// 13.5. UNIVERSIDAD
+// ---------------------------------------------------------
+
+function crearControladorUniversidad(): ControladorUniversidad
+{
+    require_once __DIR__ . '/../controladores/ControladorUniversidad.php';
+
+    return new ControladorUniversidad();
+}
+
+
+// ---------------------------------------------------------
+// 13.6. LINEA DE INVESTIGACION
+// ---------------------------------------------------------
+
+function crearControladorLineaInvestigacion(): ControladorLineaInvestigacion
+{
+    require_once __DIR__ . '/../controladores/ControladorLineaInvestigacion.php';
+
+    return new ControladorLineaInvestigacion();
+}
+
+
+// =========================================================
+// 14. CONTROLADORES DE LA VERSION 2
+//
+// Estos controladores reciben directamente el servicio
+// mediante inyeccion de dependencias.
+// =========================================================
+
+
+// ---------------------------------------------------------
+// 14.1. SEMILLERO
+// ---------------------------------------------------------
+
+function crearControladorSemillero(): ControladorSemillero
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioSemilleroMariaDB($pdo);
+
+    $servicio = new ServicioSemillero($repo);
+
+    return new ControladorSemillero($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.2. DOCENTE
+// ---------------------------------------------------------
+
+function crearControladorDocente(): ControladorDocente
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioDocenteMariaDB($pdo);
+
+    $servicio = new ServicioDocente($repo);
+
+    return new ControladorDocente($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.3. GRUPO DE INVESTIGACION
+// ---------------------------------------------------------
+
+function crearControladorGrupoInvestigacion(): ControladorGrupoInvestigacion
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioGrupoInvestigacionMariaDB($pdo);
+
+    $servicio = new ServicioGrupoInvestigacion($repo);
+
+    return new ControladorGrupoInvestigacion($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.4. GRUPO LINEA
+// ---------------------------------------------------------
+
+function crearControladorGrupoLinea(): ControladorGrupoLinea
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioGrupoLineaMariaDB($pdo);
+
+    $servicio = new ServicioGrupoLinea($repo);
+
+    return new ControladorGrupoLinea($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.5. PARTICIPA GRUPO
+// ---------------------------------------------------------
+
+function crearControladorParticipaGrupo(): ControladorParticipaGrupo
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioParticipaGrupoMariaDB($pdo);
+
+    $servicio = new ServicioParticipaGrupo($repo);
+
+    return new ControladorParticipaGrupo($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.6. PARTICIPA SEMILLERO
+// ---------------------------------------------------------
+
+function crearControladorParticipaSemillero(): ControladorParticipaSemillero
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioParticipaSemilleroMariaDB($pdo);
+
+    $servicio = new ServicioParticipaSemillero($repo);
+
+    return new ControladorParticipaSemillero($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.7. SEMILLERO LINEA
+// ---------------------------------------------------------
+
+function crearControladorSemilleroLinea(): ControladorSemilleroLinea
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioSemilleroLineaMariaDB($pdo);
+
+    $servicio = new ServicioSemilleroLinea($repo);
+
+    return new ControladorSemilleroLinea($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.8. AC LINEA
+// ---------------------------------------------------------
+
+function crearControladorAcLinea(): ControladorAcLinea
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioAcLineaMariaDB($pdo);
+
+    $servicio = new ServicioAcLinea($repo);
+
+    return new ControladorAcLinea($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.9. ODS LINEA
+// ---------------------------------------------------------
+
+function crearControladorOdsLinea(): ControladorOdsLinea
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioOdsLineaMariaDB($pdo);
+
+    $servicio = new ServicioOdsLinea($repo);
+
+    return new ControladorOdsLinea($servicio);
+}
+
+
+// ---------------------------------------------------------
+// 14.10. AA LINEA
+// ---------------------------------------------------------
+
+function crearControladorAaLinea(): ControladorAaLinea
+{
+    $pdo = obtenerConexionBD();
+
+    $repo = new RepositorioAaLineaMariaDB($pdo);
+
+    $servicio = new ServicioAaLinea($repo);
+
+    return new ControladorAaLinea($servicio);
+}
+
+/*
+ * VERSION 3 - ENSAMBLAJE DE AUTENTICACION
+ *
+ * QUE ES:
+ * Fabrica del controlador de login.
+ *
+ * POR QUE:
+ * Este es el lugar donde se construyen las clases
+ * concretas y se inyectan sus dependencias.
+ *
+ * QUE NO HACE:
+ * No recibe HTTP ni verifica contrasenas.
+ */
+function crearControladorAutenticacionV3(): ControladorAutenticacion
+{
+    require_once __DIR__ . '/../repositorios/RepositorioAutenticacionMariaDB.php';
+    require_once __DIR__ . '/ServicioAutenticacion.php';
+    require_once __DIR__ . '/../controladores/ControladorAutenticacion.php';
+
+    // Compatible con Docker local y el DSN de produccion.
+    $dsn = getenv('DB_DSN_MARIADB');
+
+    if (!is_string($dsn) || $dsn === '') {
+        $host = getenv('DB_HOST');
+        $base = getenv('DB_NAME');
+
+        if (
+            !is_string($host) || $host === '' ||
+            !is_string($base) || $base === ''
+        ) {
+            throw new RuntimeException('Configuracion de base de datos incompleta.');
+        }
+
+        $dsn = 'mysql:host=' . $host
+            . ';port=3306;dbname=' . $base
+            . ';charset=utf8mb4';
+    }
+
+    $usuario = getenv('DB_USUARIO') ?: getenv('DB_USER');
+    $clave = getenv('DB_CLAVE');
+
+    if ($clave === false) {
+        $clave = getenv('DB_PASS');
+    }
+
+    if (!is_string($usuario) || $usuario === '' || $clave === false) {
+        throw new RuntimeException('Credenciales de MariaDB no configuradas.');
+    }
+
+    $pdo = new PDO(
+        $dsn,
+        $usuario,
+        $clave,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+
+    $repositorio = new RepositorioAutenticacionMariaDB($pdo);
+    $servicio = new ServicioAutenticacion($repositorio);
+
+    return new ControladorAutenticacion($servicio);
+}
+
+/*
+ * PROYECTO DE INVESTIGACION - V3
+ *
+ * QUE ES:
+ * Fabrica de la proteccion JWT Bearer.
+ *
+ * POR QUE:
+ * Construye las dependencias concretas y entrega
+ * la guardia al enrutador de la API.
+ *
+ * QUE NO HACE:
+ * No autentica contrasenas.
+ * No administra sesiones PHP.
+ * No modifica recursos de V1 o V2.
+ */
+
+require_once __DIR__ . '/../controladores/GuardiaAccesoV3.php';
+require_once __DIR__ . '/../repositorios/RepositorioAutenticacionMariaDB.php';
+
+function crearGuardiaAccesoV3(): GuardiaAccesoV3
+{
+    $dsn = getenv('DB_DSN_MARIADB');
+
+    if (!is_string($dsn) || $dsn === '') {
+        $host = getenv('DB_HOST');
+        $base = getenv('DB_NAME');
+
+        if (
+            !is_string($host) || $host === '' ||
+            !is_string($base) || $base === ''
+        ) {
+            throw new RuntimeException(
+                'Configuracion de MariaDB incompleta.'
+            );
+        }
+
+        $dsn = 'mysql:host=' . $host
+            . ';port=3306;dbname=' . $base
+            . ';charset=utf8mb4';
+    }
+
+    $usuario = getenv('DB_USUARIO') ?: getenv('DB_USER');
+    $clave = getenv('DB_CLAVE');
+
+    if ($clave === false) {
+        $clave = getenv('DB_PASS');
+    }
+
+    if (
+        !is_string($usuario) ||
+        $usuario === '' ||
+        $clave === false
+    ) {
+        throw new RuntimeException(
+            'Credenciales de MariaDB no configuradas.'
+        );
+    }
+
+    $pdo = new PDO(
+        $dsn,
+        $usuario,
+        $clave,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+
+    $repositorio = new RepositorioAutenticacionMariaDB(
+        $pdo
+    );
+
+    return new GuardiaAccesoV3($repositorio);
+}
+
+
+/*
+ * VERSION 3 - FABRICA DE USUARIOS
+ *
+ * Construye controlador, servicio y repositorio.
+ * La conexion PDO se crea aqui, no en el controlador.
+ */
+
+require_once __DIR__ . '/../repositorios/RepositorioUsuariosMariaDBV3.php';
+require_once __DIR__ . '/ServicioUsuariosV3.php';
+require_once __DIR__ . '/../controladores/ControladorUsuariosV3.php';
+
+function crearControladorUsuariosV3(): ControladorUsuariosV3
+{
+    $dsn = getenv('DB_DSN_MARIADB');
+
+    if (!is_string($dsn) || $dsn === '') {
+        $host = getenv('DB_HOST');
+        $base = getenv('DB_NAME');
+
+        if (
+            !is_string($host) || $host === '' ||
+            !is_string($base) || $base === ''
+        ) {
+            throw new RuntimeException(
+                'Configuracion de MariaDB incompleta.'
+            );
+        }
+
+        $dsn = 'mysql:host=' . $host
+            . ';port=3306;dbname=' . $base
+            . ';charset=utf8mb4';
+    }
+
+    $usuario = getenv('DB_USUARIO') ?: getenv('DB_USER');
+    $clave = getenv('DB_CLAVE');
+
+    if ($clave === false) {
+        $clave = getenv('DB_PASS');
+    }
+
+    if (
+        !is_string($usuario) ||
+        $usuario === '' ||
+        $clave === false
+    ) {
+        throw new RuntimeException(
+            'Credenciales de MariaDB incompletas.'
+        );
+    }
+
+    $pdo = new PDO(
+        $dsn,
+        $usuario,
+        $clave,
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
+
+    $repositorio = new RepositorioUsuariosMariaDBV3(
+        $pdo
+    );
+
+    $servicio = new ServicioUsuariosV3(
+        $repositorio
+    );
+
+    return new ControladorUsuariosV3(
+        $servicio
+    );
+}

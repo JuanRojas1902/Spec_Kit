@@ -1,0 +1,67 @@
+# ==============================================================================
+# Configuración de Docker Compose - Versión 2 (mi_v2_facturas)
+# ==============================================================================
+# Propósito: Orquestar los servicios de MariaDB, la API, el Front y phpMyAdmin
+# con los puertos específicos del host solicitados para evitar conflictos.
+# ==============================================================================
+
+name: mi_v2_facturas
+
+services:
+  mariadb:
+    image: mariadb:11
+    container_name: mariadb_v2
+    environment:
+      MARIADB_ROOT_PASSWORD: rootpassword
+      MARIADB_DATABASE: investigacion
+      MARIADB_USER: investigacion
+      MARIADB_PASSWORD: password
+    ports:
+      - "13427:3306"
+    volumes:
+      - datos_investigacion_v2_verificado:/var/lib/mysql
+      - ./db:/docker-entrypoint-initdb.d
+
+  api-facturas:
+    build: ./api_investigacion
+    container_name: api_facturas_v2
+    ports:
+      - "8126:8026"
+    volumes:
+      - ./api_investigacion:/var/www/html  # <-- Añadido para sincronizar en vivo
+    environment:
+      DB_HOST: mariadb
+      DB_NAME: investigacion
+      DB_USER: investigacion
+      DB_PASS: password
+      JWT_SECRETO: ${JWT_SECRETO}
+    depends_on:
+      - mariadb
+
+  front-php:
+    build: ./front_php
+    container_name: front_php_v2
+    ports:
+      - "8124:8024"
+    volumes:
+      - ./front_php:/var/www/html  # <-- Añadido para sincronizar en vivo
+    environment:
+      URL_API: http://api-facturas:8026
+
+       # Usuario autorizado para ingresar al frontend.
+      FRONT_USUARIO: ${FRONT_USUARIO:-}
+
+      # Hash de la contraseña; nunca la contraseña original.
+      FRONT_PASSWORD_HASH: ${FRONT_PASSWORD_HASH:-}
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_v2
+    ports:
+      - "8202:80"
+    environment:
+      PMA_HOST: mariadb
+
+# Volumen persistente de la base de datos.
+volumes:
+  datos_investigacion_v2_verificado:

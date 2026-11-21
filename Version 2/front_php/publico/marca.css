@@ -1,0 +1,6 @@
+/* Identidad visual: complementa Bootstrap, no modifica la lógica. */
+body { background: #f5f7fb; color: #23354e; }
+.card { border: 1px solid #dfe5ee; border-radius: .8rem; box-shadow: 0 4px 18px rgba(27,39,59,.07); }
+.form-label { font-weight: 600; }
+.table-responsive { border: 1px solid #dfe5ee; border-radius: .6rem; }
+.table { margin-bottom: 0; }

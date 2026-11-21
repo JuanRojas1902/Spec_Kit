@@ -1,0 +1,10 @@
+# api_investigacion/.htaccess
+
+RewriteEngine On
+
+# Si el archivo o directorio solicitado NO existe físicamente...
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# ...entonces redirige todo el tráfico al index.php silenciosamente
+RewriteRule ^(.*)$ index.php [QSA,L]
