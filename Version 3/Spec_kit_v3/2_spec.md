@@ -1,7 +1,7 @@
 # 2_spec.md — Especificación funcional, versión 3
 
 **Proyecto:** Sistema de Investigación · **Versión:** V3 (autenticación y autorización)  
-**Fecha de documentación:** 21 de noviembre de 2026 · **Estado:** implementación parcial, NO cerrada  
+**Fecha de documentación:** 21 de noviembre de 2026 · 
 **Herencia:** V1 (catálogos) y V2 (relaciones, maestro-detalle y tablas puente). Se mantiene la constitución/metodología del curso.
 
 > **QUÉ construir.** Este documento define alcance, reglas y aceptación; el [3_plan.md](3_plan.md) explica cómo construirlo. **No equivale a una certificación de que toda V3 esté terminada.**
